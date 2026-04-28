@@ -2,172 +2,930 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BDSM & Kink Resources</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Helpful BDSM and kink resources focused on education, consent, safety, and community connection.">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0808;
+      --surface: #110d0d;
+      --surface2: #1a1212;
+      --border: rgba(180,120,90,0.18);
+      --accent: #c8855a;
+      --accent2: #8b3a3a;
+      --gold: #d4a96a;
+      --text: #e8ddd5;
+      --text-muted: #8a7a72;
+      --text-dim: #5a4a44;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(10,8,8,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 1rem;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      padding: 12rem 0 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 20% 50%, rgba(139,58,58,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 85% 20%, rgba(200,133,90,0.07) 0%, transparent 60%);
+    }
+
+    .page-header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.2s;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.35s;
+    }
+
+    .page-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .page-subtitle {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.5s;
+    }
+
+    /* ─── FILTER TABS ─── */
+    .filter-bar {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .filter-tab {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.3s, border-color 0.3s;
+      margin-bottom: -1px;
+    }
+    .filter-tab:hover { color: var(--text-muted); }
+    .filter-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ─── MAIN LAYOUT ─── */
+    .resources-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 4rem;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      position: sticky;
+      top: 6rem;
+    }
+
+    .sidebar-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.2rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 0.6rem 0.8rem;
+      border-left: 1px solid transparent;
+      transition: color 0.3s, border-color 0.3s, padding-left 0.3s;
+    }
+    .sidebar-nav a:hover {
+      color: var(--text-muted);
+      border-left-color: var(--border);
+      padding-left: 1.2rem;
+    }
+    .sidebar-nav a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      padding-left: 1.2rem;
+    }
+
+    .sidebar-count {
+      font-size: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+    }
+
+    /* ─── RESOURCE GROUPS ─── */
+    .resource-group {
+      margin-bottom: 5rem;
+    }
+    .resource-group:last-child { margin-bottom: 0; }
+
+    .group-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .group-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .group-title-wrap {}
+
+    .group-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+
+    .group-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2rem;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .group-desc {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+
+    /* ─── RESOURCE CARDS ─── */
+    .resource-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .resource-card {
+      display: flex;
+      align-items: stretch;
+      background: var(--surface);
+      text-decoration: none;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .resource-card:hover { background: var(--surface2); }
+
+    .resource-card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.35s ease;
+    }
+    .resource-card:hover::after { transform: scaleY(1); }
+
+    .resource-card-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 2rem 2rem 2rem 2.5rem;
+      gap: 2rem;
+    }
+
+    .resource-card-left { flex: 1; }
+
+    .resource-card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+      transition: color 0.3s;
+    }
+    .resource-card:hover .resource-card-name { color: var(--accent); }
+
+    .resource-card-desc {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0.6rem;
+    }
+
+    .resource-card-url {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .resource-card-arrow {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      transition: color 0.3s, transform 0.3s;
+      flex-shrink: 0;
+    }
+    .resource-card:hover .resource-card-arrow {
+      color: var(--accent);
+      transform: translate(3px, -3px);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      opacity: 0.3;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-glyph {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+    }
+
+    /* ─── CALLOUT BANNER ─── */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 2.5rem 3rem;
+      margin: 0 auto 5rem;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .callout-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .callout-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+
+    .callout-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.8rem 1.8rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.3s;
+    }
+    .callout-link:hover { background: var(--gold); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5rem 0 3rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .footer-brand {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .footer-col-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .footer-links a {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 4rem auto 0;
+      padding: 2rem 4rem 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(10,8,8,0.97);
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-header-inner,
+      .filter-bar,
+      .divider { padding: 0 2rem; }
+
+      .resources-layout {
+        grid-template-columns: 1fr;
+        padding: 3rem 2rem;
+        gap: 3rem;
+      }
+
+      .sidebar { position: static; }
+      .sidebar-nav { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+      .sidebar-nav a { border-left: none; border-bottom: 1px solid transparent; padding: 0.4rem 0.8rem; }
+      .sidebar-nav a:hover, .sidebar-nav a.active {
+        border-left: none; border-bottom-color: var(--accent);
+        padding-left: 0.8rem;
+      }
+
+      .callout { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem; margin: 0 2rem 3rem; }
+
+      .footer-inner { grid-template-columns: 1fr; gap: 2.5rem; padding: 0 2rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 2rem 0; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">BDSM & Kink Connect</a>
-      <button class="navbar-toggler" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="how-to-meet.html">How to Meet</a></li>
-          <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+  <!-- Nav -->
+  <nav>
+    <a class="nav-brand" href="index.html">Kink &amp; Community Connect</a>
+    <button class="nav-toggle" id="navToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="how-to-meet.html">How to Meet</a></li>
+      <li><a href="resources.html" class="active">Resources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <p class="page-eyebrow">Curated Reference Library</p>
+      <h1 class="page-title">Resources &amp; <em>Guides</em></h1>
+      <p class="page-subtitle">Education, safety, and community-first tools for informed, consensual participation in kink and BDSM.</p>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-bar">
+    <button class="filter-tab active" data-filter="all">All Resources</button>
+    <button class="filter-tab" data-filter="education">Education</button>
+    <button class="filter-tab" data-filter="community">Community</button>
+    <button class="filter-tab" data-filter="safety">Safety &amp; Consent</button>
+    <button class="filter-tab" data-filter="events">Events</button>
+    <button class="filter-tab" data-filter="art">Art &amp; Culture</button>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="resources-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <p class="sidebar-label">Jump To</p>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="#education" class="active">
+            Education
+            <span class="sidebar-count">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#community">
+            Community
+            <span class="sidebar-count">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#safety">
+            Safety &amp; Consent
+            <span class="sidebar-count">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#events">
+            Events
+            <span class="sidebar-count">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#art">
+            Art &amp; Culture
+            <span class="sidebar-count">2</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Resource Groups -->
+    <main>
+
+      <!-- Education -->
+      <div class="resource-group reveal" id="education" data-category="education">
+        <div class="group-header">
+          <span class="group-icon">📖</span>
+          <div class="group-title-wrap">
+            <p class="group-label">Category 01</p>
+            <h2 class="group-title">Education &amp; Learning</h2>
+          </div>
+        </div>
+        <p class="group-desc">Platforms focused on skill-building, consent education, and understanding power dynamics within kink and BDSM.</p>
+        <div class="resource-cards">
+
+          <a href="https://kinkacademy.com" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Kink Academy</p>
+                <p class="resource-card-desc">Video-based education covering communication, safety, and consensual play techniques.</p>
+                <p class="resource-card-url">kinkacademy.com</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://www.scarleteen.com" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Scarleteen</p>
+                <p class="resource-card-desc">Inclusive sexual health education including consent, boundaries, and kink fundamentals.</p>
+                <p class="resource-card-url">scarleteen.com</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div class="resource-group reveal" id="community" data-category="community">
+        <div class="group-header">
+          <span class="group-icon">🌐</span>
+          <div class="group-title-wrap">
+            <p class="group-label">Category 02</p>
+            <h2 class="group-title">Community &amp; Social Networks</h2>
+          </div>
+        </div>
+        <p class="group-desc">Platforms where people connect, learn, and discover local events in a moderated, consent-focused environment.</p>
+        <div class="resource-cards">
+
+          <a href="https://www.fetlife.com" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">FetLife</p>
+                <p class="resource-card-desc">A social network for BDSM, fetish, and kink communities worldwide — events, groups, and discussion.</p>
+                <p class="resource-card-url">fetlife.com</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://feeld.co" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Feeld</p>
+                <p class="resource-card-desc">A dating and connection app designed for alternative relationships and kink-friendly profiles.</p>
+                <p class="resource-card-url">feeld.co</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Safety -->
+      <div class="resource-group reveal" id="safety" data-category="safety">
+        <div class="group-header">
+          <span class="group-icon">🛡</span>
+          <div class="group-title-wrap">
+            <p class="group-label">Category 03</p>
+            <h2 class="group-title">Safety, Consent &amp; Advocacy</h2>
+          </div>
+        </div>
+        <p class="group-desc">Organizations providing legal information, safety frameworks, and advocacy for people in alternative sexual communities.</p>
+        <div class="resource-cards">
+
+          <a href="https://www.ncsfreedom.org" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">National Coalition for Sexual Freedom</p>
+                <p class="resource-card-desc">Advocacy, consent education, and kink-aware professional resources for practitioners.</p>
+                <p class="resource-card-url">ncsfreedom.org</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://bdsmcontracts.org" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">BDSM Contracts &amp; Negotiation Tools</p>
+                <p class="resource-card-desc">Templates and frameworks for consent, expectations, and clearly defined boundaries.</p>
+                <p class="resource-card-url">bdsmcontracts.org</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div class="resource-group reveal" id="events" data-category="events">
+        <div class="group-header">
+          <span class="group-icon">🎟</span>
+          <div class="group-title-wrap">
+            <p class="group-label">Category 04</p>
+            <h2 class="group-title">Events, Workshops &amp; Socials</h2>
+          </div>
+        </div>
+        <p class="group-desc">In-person events are a cornerstone of the kink community, focusing on education, networking, and meaningful social connection.</p>
+        <div class="resource-cards">
+
+          <a href="https://www.fetlife.com" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Local Munches &amp; Meetups</p>
+                <p class="resource-card-desc">Typically listed through FetLife groups and local community boards — casual, welcoming gatherings.</p>
+                <p class="resource-card-url">fetlife.com → Groups</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://www.leathermark.org" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Leather &amp; Fetish Events</p>
+                <p class="resource-card-desc">Directory of leather, fetish, and LGBTQ+ events spanning local and national gatherings.</p>
+                <p class="resource-card-url">leathermark.org</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Art -->
+      <div class="resource-group reveal" id="art" data-category="art">
+        <div class="group-header">
+          <span class="group-icon">🖼</span>
+          <div class="group-title-wrap">
+            <p class="group-label">Category 05</p>
+            <h2 class="group-title">Art &amp; Culture</h2>
+          </div>
+        </div>
+        <p class="group-desc">Art plays a significant role in kink culture, expressing identity, power, and alternative aesthetics through creative work and preservation.</p>
+        <div class="resource-cards">
+
+          <a href="https://www.thehun.art" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">The Hun</p>
+                <p class="resource-card-desc">A contemporary leather and fetish art publication exploring the aesthetics of kink culture.</p>
+                <p class="resource-card-url">thehun.art</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://www.leatherarchives.org" target="_blank" class="resource-card">
+            <div class="resource-card-inner">
+              <div class="resource-card-left">
+                <p class="resource-card-name">Leather Archives &amp; Museum</p>
+                <p class="resource-card-desc">Preserving the history, art, and artifacts of leather and kink communities for future generations.</p>
+                <p class="resource-card-url">leatherarchives.org</p>
+              </div>
+              <span class="resource-card-arrow">↗</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Callout Banner -->
+  <div class="callout reveal" style="margin: 0 auto 6rem; max-width: calc(1100px - 0px); padding-left: 4rem; padding-right: 4rem; border-left-width: 3px;">
+    <div>
+      <p class="callout-title">Looking for local Charleston entertainment?</p>
+      <p class="callout-body">Michael After Dark offers adult entertainment and bachelorette party experiences across the Charleston, SC area.</p>
+    </div>
+    <a href="https://michaelafterdark.com" target="_blank" class="callout-link">Explore Local Fun →</a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">Kink &amp; Community Connect</p>
+        <p class="footer-tagline">A safe, inclusive, and educational space celebrating connection and consent among adults.</p>
+      </div>
+      <div>
+        <p class="footer-col-title">Navigation</p>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="how-to-meet.html">How to Meet</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Community Links</p>
+        <ul class="footer-links">
+          <li><a href="https://www.fetlife.com" target="_blank">FetLife</a></li>
+          <li><a href="https://kinkacademy.com" target="_blank">Kink Academy</a></li>
+          <li><a href="https://www.ncsfreedom.org" target="_blank">NCSF</a></li>
+          <li><a href="https://www.leathermark.org" target="_blank">Leather &amp; LGBTQ+ Events</a></li>
+          <li><a href="https://michaelafterdark.com" target="_blank">Michael After Dark</a></li>
         </ul>
       </div>
     </div>
-  </nav>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BDSM &amp; Kink Community Connect. All rights reserved.</p>
+      <p class="footer-copy">Educational resources for adults 18+</p>
+    </div>
+  </footer>
 
-<!-- Header -->
-<header class="py-5 bg-dark text-white text-center">
-  <div class="container">
-    <h1 class="display-5">BDSM & Kink Resources</h1>
-    <p class="lead">
-      Education, safety, and community-first tools for informed participation.
-    </p>
-  </div>
-</header>
+  <script>
+    // Nav toggle
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
 
-<!-- Education -->
-<section class="py-5">
-  <div class="container">
-    <h2>Education & Learning</h2>
-    <p>
-      These platforms focus on skill-building, consent education, and understanding
-      power dynamics within kink and BDSM.
-    </p>
-    <ul>
-      <li>
-        <strong>Kink Academy</strong><br>
-        <a href="https://kinkacademy.com" target="_blank">https://kinkacademy.com</a><br>
-        Video-based education covering communication, safety, and consensual play.
-      </li>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
 
-      <li class="mt-3">
-        <strong>Scarleteen</strong><br>
-        <a href="https://www.scarleteen.com" target="_blank">https://www.scarleteen.com</a><br>
-        Inclusive sexual health education, including consent, boundaries, and kink basics.
-      </li>
-    </ul>
-  </div>
-</section>
+    // Filter tabs
+    const tabs = document.querySelectorAll('.filter-tab');
+    const groups = document.querySelectorAll('.resource-group');
 
-<!-- Community -->
-<section class="py-5 bg-light">
-  <div class="container">
-    <h2>Community & Social Networks</h2>
-    <p>
-      Community platforms allow people to connect, learn, and discover local events
-      in a moderated, consent-focused environment.
-    </p>
-    <ul>
-      <li>
-        <strong>FetLife</strong><br>
-        <a href="https://www.fetlife.com" target="_blank">https://www.fetlife.com</a><br>
-        A social network for BDSM, fetish, and kink communities worldwide.
-      </li>
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
 
-      <li class="mt-3">
-        <strong>Feeld</strong><br>
-        <a href="https://feeld.co" target="_blank">https://feeld.co</a><br>
-        A dating and connection app designed for alternative relationships and kink-friendly profiles.
-      </li>
-    </ul>
-  </div>
-</section>
+        const filter = tab.dataset.filter;
+        groups.forEach(g => {
+          if (filter === 'all' || g.dataset.category === filter) {
+            g.style.display = '';
+          } else {
+            g.style.display = 'none';
+          }
+        });
+      });
+    });
 
-<!-- Safety -->
-<section class="py-5">
-  <div class="container">
-    <h2>Safety, Consent & Advocacy</h2>
-    <p>
-      These organizations provide legal information, safety frameworks, and advocacy
-      for people in alternative sexual communities.
-    </p>
-    <ul>
-      <li>
-        <strong>National Coalition for Sexual Freedom (NCSF)</strong><br>
-        <a href="https://www.ncsfreedom.org" target="_blank">https://www.ncsfreedom.org</a><br>
-        Advocacy, consent education, and kink-aware professional resources.
-      </li>
+    // Sidebar active state on scroll
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    const sections = document.querySelectorAll('.resource-group[id]');
 
-      <li class="mt-3">
-        <strong>BDSM Contracts & Negotiation Tools</strong><br>
-        <a href="https://bdsmcontracts.org" target="_blank">https://bdsmcontracts.org</a><br>
-        Templates and frameworks for consent, expectations, and boundaries.
-      </li>
-    </ul>
-  </div>
-</section>
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          sidebarLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-nav a[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
 
-<!-- Events -->
-<section class="py-5 bg-light">
-  <div class="container">
-    <h2>Events, Workshops & Socials</h2>
-    <p>
-      In-person events are a cornerstone of the kink community and often focus on
-      education, networking, and social connection.
-    </p>
-    <ul>
-      <li>
-        <strong>Local Munches & Meetups</strong><br>
-        Typically listed through FetLife groups and local community boards.
-      </li>
-
-      <li class="mt-3">
-        <strong>Leather & Fetish Events</strong><br>
-        <a href="https://www.leathermark.org" target="_blank">https://www.leathermark.org</a><br>
-        Directory of leather, fetish, and LGBTQ+ events.
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- Art -->
-<section class="py-5">
-  <div class="container">
-    <h2>BDSM & Kink Art Resources</h2>
-    <p>
-      Art plays a significant role in kink culture, expressing identity, power,
-      and alternative aesthetics.
-    </p>
-    <ul>
-      <li>
-        <strong>The Hun</strong><br>
-        <a href="https://www.thehun.art" target="_blank">https://www.thehun.art</a><br>
-        A contemporary leather and fetish art publication.
-      </li>
-
-      <li class="mt-3">
-        <strong>Leather Archives & Museum</strong><br>
-        <a href="https://www.leatherarchives.org" target="_blank">https://www.leatherarchives.org</a><br>
-        Preserving the history and art of leather and kink communities.
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="py-4 bg-dark text-white text-center">
-  <div class="container">
-    <small>
-      Educational resources for adults 18+. All links are third-party and independently operated.
-    </small>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    sections.forEach(s => sectionObserver.observe(s));
+  </script>
 </body>
 </html>

@@ -4,139 +4,842 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BDSM & Kink Community Connect</title>
-  <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
-    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0808;
+      --surface: #110d0d;
+      --surface2: #1a1212;
+      --border: rgba(180,120,90,0.18);
+      --accent: #c8855a;
+      --accent2: #8b3a3a;
+      --gold: #d4a96a;
+      --text: #e8ddd5;
+      --text-muted: #8a7a72;
+      --text-dim: #5a4a44;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(10,8,8,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 1rem;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,58,58,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(200,133,90,0.08) 0%, transparent 60%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 0.6s;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 0.8s;
+    }
+
+    .btn-primary-custom {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      padding: 0.9rem 2.2rem;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-primary-custom:hover { background: var(--gold); transform: translateY(-1px); }
+
+    .btn-outline-custom {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: transparent;
+      border: 1px solid var(--accent);
+      padding: 0.9rem 2.2rem;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+    }
+    .btn-outline-custom:hover {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-dim);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1.4s;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--text-dim), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0 4rem;
+      opacity: 0.3;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-glyph {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+    }
+
+    /* ─── SECTIONS ─── */
+    section {
+      padding: 7rem 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .section-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      max-width: 640px;
+      line-height: 1.85;
+    }
+    .section-body + .section-body { margin-top: 1.2rem; }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-accent-block {
+      position: relative;
+      padding: 3rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .about-accent-block::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 3rem;
+      width: 4rem;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .about-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-quote-attr {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* ─── PILLARS (How to Meet) ─── */
+    .pillars-bg {
+      background: var(--surface);
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      margin-top: 4rem;
+      border: 1px solid var(--border);
+      background: var(--border);
+    }
+
+    .pillar {
+      background: var(--surface2);
+      padding: 2.5rem;
+      transition: background 0.3s;
+    }
+    .pillar:hover { background: #201616; }
+
+    .pillar-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .pillar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .pillar-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    /* ─── RESOURCES ─── */
+    .resources-list {
+      margin-top: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .resource-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      gap: 2rem;
+      transition: padding-left 0.3s;
+    }
+    .resource-item:hover { padding-left: 1rem; }
+
+    .resource-left { flex: 1; }
+
+    .resource-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+      transition: color 0.3s;
+    }
+    .resource-item:hover .resource-name { color: var(--accent); }
+
+    .resource-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+
+    .resource-arrow {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      transition: color 0.3s, transform 0.3s;
+    }
+    .resource-item:hover .resource-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* ─── INTEGRATION ─── */
+    .integration-bg { background: var(--surface); }
+
+    .integration-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .int-card {
+      border: 1px solid var(--border);
+      padding: 2.2rem;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      transition: border-color 0.3s;
+    }
+    .int-card:hover { border-color: var(--accent); }
+
+    .int-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent2), var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .int-card:hover::after { transform: scaleX(1); }
+
+    .int-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .int-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .int-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5rem 0 3rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .footer-brand {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .footer-col-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .footer-links a {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 4rem auto 0;
+      padding: 2rem 4rem 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(10,8,8,0.97);
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .container { padding: 0 2rem; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .integration-cards { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+      .divider { padding: 0 2rem; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">BDSM & Kink Connect</a>
-      <button class="navbar-toggler" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="how-to-meet.html">How to Meet</a></li>
-          <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
-          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-        </ul>
-      </div>
-    </div>
+  <!-- Nav -->
+  <nav>
+    <a class="nav-brand" href="#">Kink &amp; Community Connect</a>
+    <button class="nav-toggle" id="navToggle">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">Community</a></li>
+      <li><a href="#meet">How to Meet</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#integration">Integration</a></li>
+    </ul>
   </nav>
 
   <!-- Hero -->
-  <header class="py-5 text-center bg-secondary text-white">
-    <div class="container">
-      <h1 class="display-4">Welcome to the BDSM & Kink Community</h1>
-      <p class="lead">A safe, inclusive space for connection, education, and celebration.</p>
+  <header class="hero">
+    <div style="position:relative; z-index:1;">
+      <p class="hero-eyebrow">BDSM &amp; Kink Community Connect</p>
+      <h1>Where Consent<br>Meets <em>Community</em></h1>
+      <p class="hero-sub">A safe, inclusive space for connection, education, and celebration among consenting adults.</p>
+      <div class="hero-cta">
+        <a href="#meet" class="btn-primary-custom">How to Connect</a>
+        <a href="#resources" class="btn-outline-custom">Explore Resources</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
     </div>
   </header>
 
-  <!-- Community Section -->
-  <section id="community" class="py-5">
+  <div class="divider" aria-hidden="true">
+    <div class="divider-line"></div>
+    <span class="divider-glyph">✦</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
     <div class="container">
-      <h2>About the Community</h2>
-      <p>
-        BDSM stands for Bondage & Discipline, Dominance & Submission, and
-        Sadism & Masochism — a broad spectrum of interests, roles, and play
-        styles embraced by consenting adults. Community spaces focus on
-        connection, mutual respect, informed consent, and shared learning. 
-      </p>
-      <p>
-        The leather pride flag and other symbols are widely recognized within
-        leather, fetish, and kink subcultures as emblems of identity and
-        belonging. 
-      </p>
+      <div class="about-grid reveal">
+        <div>
+          <p class="section-label">About the Community</p>
+          <h2 class="section-title">Respect, Consent &amp; Belonging</h2>
+          <p class="section-body">
+            BDSM — Bondage &amp; Discipline, Dominance &amp; Submission, Sadism &amp; Masochism — encompasses a broad spectrum of interests, roles, and play styles embraced by consenting adults worldwide.
+          </p>
+          <p class="section-body" style="margin-top:1.2rem;">
+            Community spaces center on connection, mutual respect, informed consent, and shared learning. The leather pride flag and kindred symbols are widely recognized within leather, fetish, and kink subcultures as emblems of identity and belonging.
+          </p>
+        </div>
+        <div class="about-accent-block">
+          <p class="about-quote">"The goal is always a safe, sane, and consensual space where every participant feels seen and respected."</p>
+          <p class="about-quote-attr">— Community Principle</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Meet Section -->
-  <section id="meet" class="py-5 bg-light">
+  <div class="divider" aria-hidden="true">
+    <div class="divider-line"></div>
+    <span class="divider-glyph">✦</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- How People Meet -->
+  <section id="meet" class="pillars-bg">
     <div class="container">
-      <h2>How People Meet & Connect</h2>
-      <p>
-        Many people in the kink community meet through a mix of online and offline
-        avenues — from forums and social apps to local group events and social
-        gatherings. Some features of community participation include:
-      </p>
-      <ul>
-        <li>Discussion forums and social groups</li>
-        <li>Event meetups and workshops</li>
-        <li>Online communities designed for respectful kink connection</li>
-        <li>Private and public events where shared interests are celebrated</li>
-      </ul>
-      <p>
-        A site like PrideandPleasure.co historically acted as a platform for
-        fetish dating and community connection, emphasizing privacy, support,
-        and shared interests. 
-      </p>
+      <div class="reveal">
+        <p class="section-label">Connection &amp; Community</p>
+        <h2 class="section-title">How People Meet</h2>
+        <p class="section-body">
+          Members find community through a thoughtful mix of digital and in-person avenues — from curated forums to intimate local gatherings — always grounded in shared values.
+        </p>
+      </div>
+      <div class="pillars-grid reveal">
+        <div class="pillar">
+          <p class="pillar-num">01</p>
+          <h3 class="pillar-title">Forums &amp; Social Groups</h3>
+          <p class="pillar-body">Online discussion spaces where members share experiences, ask questions, and form connections before ever meeting in person.</p>
+        </div>
+        <div class="pillar">
+          <p class="pillar-num">02</p>
+          <h3 class="pillar-title">Events &amp; Workshops</h3>
+          <p class="pillar-body">Local meetups, educational workshops, and themed showcases that bring the community together in safe, well-organized environments.</p>
+        </div>
+        <div class="pillar">
+          <p class="pillar-num">03</p>
+          <h3 class="pillar-title">Kink-Centered Platforms</h3>
+          <p class="pillar-body">Purpose-built online communities designed for respectful kink connection — with privacy controls and community moderation built in.</p>
+        </div>
+        <div class="pillar">
+          <p class="pillar-num">04</p>
+          <h3 class="pillar-title">Private &amp; Public Events</h3>
+          <p class="pillar-body">From intimate private gatherings to larger public celebrations, events where shared interests and identities are welcomed and honored.</p>
+        </div>
+      </div>
     </div>
   </section>
+
+  <div class="divider" aria-hidden="true">
+    <div class="divider-line"></div>
+    <span class="divider-glyph">✦</span>
+    <div class="divider-line"></div>
+  </div>
 
   <!-- Resources -->
-  <section id="resources" class="py-5">
+  <section id="resources">
     <div class="container">
-      <h2>Resources & Safe Sites</h2>
-      <p>Here are well-known and safe community spaces and educational resources:</p>
-      <ul>
-        <li><a href="https://www.fetlife.com" target="_blank">FetLife</a> – Community network for kink events and discussion.</li>
-        <li><a href="https://kinkacademy.com" target="_blank">Kink Academy</a> – Educational classes and videos on kink, consent, and play.</li>
-        <li><a href="https://www.scarleteen.com" target="_blank">Scarleteen</a> – Inclusive sexual health education (including consent and BDSM basics).</li>
-        <li><a href="https://www.ncsfreedom.org" target="_blank">National Coalition for Sexual Freedom</a> – Advocacy and legal resources for kink practitioners.</li>
-        <li><a href="https://michaelafterdark.com" target="_blank">Local Fun</a> – Learn about Charleston Entertainment</li>
+      <div class="reveal">
+        <p class="section-label">Education &amp; Safety</p>
+        <h2 class="section-title">Trusted Resources</h2>
+        <p class="section-body">Curated community spaces and educational platforms committed to safety, advocacy, and informed practice.</p>
+      </div>
+      <div class="resources-list reveal">
 
-      </ul>
+        <a href="https://www.fetlife.com" target="_blank" class="resource-item">
+          <div class="resource-left">
+            <p class="resource-name">FetLife</p>
+            <p class="resource-desc">Community network for kink events, groups, and discussion</p>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+
+        <a href="https://kinkacademy.com" target="_blank" class="resource-item">
+          <div class="resource-left">
+            <p class="resource-name">Kink Academy</p>
+            <p class="resource-desc">Educational classes and videos on kink, consent, and play</p>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+
+        <a href="https://www.scarleteen.com" target="_blank" class="resource-item">
+          <div class="resource-left">
+            <p class="resource-name">Scarleteen</p>
+            <p class="resource-desc">Inclusive sexual health education including consent and BDSM basics</p>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+
+        <a href="https://www.ncsfreedom.org" target="_blank" class="resource-item">
+          <div class="resource-left">
+            <p class="resource-name">National Coalition for Sexual Freedom</p>
+            <p class="resource-desc">Advocacy and legal resources for kink practitioners</p>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+
+        <a href="https://michaelafterdark.com" target="_blank" class="resource-item">
+          <div class="resource-left">
+            <p class="resource-name">Michael After Dark</p>
+            <p class="resource-desc">Local entertainment and event fun in Charleston, SC</p>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+
+      </div>
     </div>
   </section>
 
-  <!-- Strippers in Community -->
-  <section id="strippers" class="py-5 bg-light">
+  <div class="divider" aria-hidden="true">
+    <div class="divider-line"></div>
+    <span class="divider-glyph">✦</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Integration -->
+  <section id="integration" class="integration-bg">
     <div class="container">
-      <h2>How Strippers Can Integrate into the BDSM Community</h2>
-      <p>
-        Performers and entertainers, such as strippers, can be welcomed into the
-        broader kink community by focusing on:
-      </p>
-      <ul>
-        <li>Respecting community norms around consent and boundaries.</li>
-        <li>Participating in educational workshops on kink and role play.</li>
-        <li>Collaborating with event organizers to provide performance that
-            aligns with community values (e.g., themed showcases).</li>
-        <li>Building relationships with local munches, socials, and advocacy
-            groups.</li>
-      </ul>
-      <p>
-        Integration is most successful when entertainers approach with openness,
-        curiosity, and a commitment to creating safe space for diverse
-        participants.
-      </p>
+      <div class="reveal">
+        <p class="section-label">Performers &amp; Entertainers</p>
+        <h2 class="section-title">Integrating into the Community</h2>
+        <p class="section-body">
+          Entertainers — including performers and strippers — are welcomed into the broader kink community through openness, curiosity, and a genuine commitment to shared values.
+        </p>
+      </div>
+      <div class="integration-cards reveal">
+        <div class="int-card">
+          <div class="int-icon">🤝</div>
+          <h3 class="int-title">Honor Community Norms</h3>
+          <p class="int-body">Respect established norms around consent, boundaries, and participant safety that define community culture.</p>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">📚</div>
+          <h3 class="int-title">Educational Workshops</h3>
+          <p class="int-body">Participate in workshops on kink, role play, and community values to build genuine understanding and trust.</p>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">🎭</div>
+          <h3 class="int-title">Collaborative Events</h3>
+          <p class="int-body">Work with event organizers to offer performances aligned with community values — themed showcases, curated sets, and more.</p>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">🌐</div>
+          <h3 class="int-title">Local Connections</h3>
+          <p class="int-body">Build relationships with local munches, socials, and advocacy groups to become a trusted presence in the community.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Footer with Artist Sites -->
-  <footer class="py-4 bg-dark text-white text-center">
-    <div class="container">
-      <h5>Community & Artist References</h5>
-      <p>Explore these creative and community spaces:</p>
-      <ul class="list-unstyled">
-        <li><a href="https://www.fetlife.com" class="text-light" target="_blank">FetLife</a></li>
-        <li><a href="https://kinkacademy.com" class="text-light" target="_blank">Kink Academy</a></li>
-        <li><a href="https://www.ncsfreedom.org" class="text-light" target="_blank">National Coalition for Sexual Freedom</a></li>
-        <li><a href="https://www.leathermark.org" class="text-light" target="_blank">Leather & LGBTQ+ Events</a></li>
-      </ul>
-      <small>&copy; 2026 BDSM & Kink Community Connect</small>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">Kink &amp; Community Connect</p>
+        <p class="footer-tagline">A safe, inclusive, and educational space celebrating connection and consent among adults.</p>
+      </div>
+      <div>
+        <p class="footer-col-title">Navigation</p>
+        <ul class="footer-links">
+          <li><a href="#about">Community</a></li>
+          <li><a href="#meet">How to Meet</a></li>
+          <li><a href="#resources">Resources</a></li>
+          <li><a href="#integration">Integration</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Community Links</p>
+        <ul class="footer-links">
+          <li><a href="https://www.fetlife.com" target="_blank">FetLife</a></li>
+          <li><a href="https://kinkacademy.com" target="_blank">Kink Academy</a></li>
+          <li><a href="https://www.ncsfreedom.org" target="_blank">NCSF</a></li>
+          <li><a href="https://www.leathermark.org" target="_blank">Leather &amp; LGBTQ+ Events</a></li>
+          <li><a href="https://michaelafterdark.com" target="_blank">Michael After Dark</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 BDSM &amp; Kink Community Connect. All rights reserved.</p>
+      <p class="footer-copy">Designed for consenting adults 18+</p>
     </div>
   </footer>
 
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+  <script>
+    // Nav toggle
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(r => observer.observe(r));
   </script>
 </body>
 </html>
